@@ -8,6 +8,7 @@ public class AgoraApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AgoraApplication.class, args);
+		System.out.println("Aplicação Agora iniciada com sucesso!");
 	}
 
 }

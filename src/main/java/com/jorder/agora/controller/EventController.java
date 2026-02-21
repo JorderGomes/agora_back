@@ -32,14 +32,21 @@ public class EventController {
         return ResponseEntity.ok(eventService.getAllEvents());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<EventResponseDTO>> searchEvents(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) UUID organizerId) {
+        return ResponseEntity.ok(eventService.searchEvents(title, organizerId));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<EventResponseDTO> updateEvent(@PathVariable UUID id, @RequestBody EventRequestDTO eventRequest) {
         return ResponseEntity.ok(eventService.updateEvent(id, eventRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable UUID id) {
-        eventService.deleteEvent(id);
+    public ResponseEntity<Void> deleteEvent(@PathVariable UUID id, @RequestParam UUID organizerId) {
+        eventService.deleteEvent(id, organizerId);
         return ResponseEntity.noContent().build();
     }
 

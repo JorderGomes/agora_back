@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/agora_db.mv.db
