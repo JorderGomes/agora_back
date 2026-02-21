@@ -9,6 +9,7 @@ import com.jorder.agora.repository.EventRepository;
 import com.jorder.agora.repository.EventSpecification;
 import com.jorder.agora.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -78,6 +79,36 @@ public class EventService {
         }
 
         eventRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void registerParticipant(UUID eventId, UUID userId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        // TODO: Quando o evento tiver status ele deve ser verificado aqui
+        if (event.getParticipants().contains(user)) {
+            throw new RuntimeException("Usuário já está inscrito neste evento.");
+        }
+
+        user.getEventsRegistered().add(event);
+        event.getParticipants().add(user);
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void unregisterParticipant(UUID eventId, UUID userId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        user.getEventsRegistered().remove(event);
+        event.getParticipants().remove(user);
+
+        userRepository.save(user);
     }
 
 }
