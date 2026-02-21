@@ -2,7 +2,9 @@ package com.jorder.agora.service;
 
 import com.jorder.agora.dto.EventRequestDTO;
 import com.jorder.agora.dto.EventResponseDTO;
+import com.jorder.agora.dto.UserResponseDTO;
 import com.jorder.agora.mapper.EventMapper;
+import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.Event;
 import com.jorder.agora.model.User;
 import com.jorder.agora.repository.EventRepository;
@@ -24,6 +26,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final EventMapper eventMapper;
+    private final UserMapper userMapper;
 
     public EventResponseDTO createEvent(EventRequestDTO eventRequestDTO) {
         User organizer = userRepository.findById(eventRequestDTO.organizerId())
@@ -79,6 +82,16 @@ public class EventService {
         }
 
         eventRepository.deleteById(id);
+    }
+
+    public List<UserResponseDTO> getEventParticipants(UUID eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
+
+        // Converte a lista de entidades para DTOs usando o mapper
+        return event.getParticipants().stream()
+                .map(userMapper::toResponseDTO)
+                .toList();
     }
 
     @Transactional

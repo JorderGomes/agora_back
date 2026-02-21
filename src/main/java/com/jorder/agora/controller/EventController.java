@@ -2,6 +2,8 @@ package com.jorder.agora.controller;
 
 import com.jorder.agora.dto.EventRequestDTO;
 import com.jorder.agora.dto.EventResponseDTO;
+import com.jorder.agora.dto.UserResponseDTO;
+import com.jorder.agora.model.User;
 import com.jorder.agora.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,6 +51,11 @@ public class EventController {
     public ResponseEntity<Void> deleteEvent(@PathVariable UUID id, @RequestParam UUID organizerId) {
         eventService.deleteEvent(id, organizerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{eventId}/participants")
+    public ResponseEntity<List<UserResponseDTO>> getEventParticipants(@PathVariable UUID eventId) {
+        return ResponseEntity.ok(eventService.getEventParticipants(eventId));
     }
 
     @PostMapping("/{eventId}/participants/{userId}")
