@@ -84,48 +84,48 @@ public class EventService {
         eventRepository.deleteById(id);
     }
 
-    public List<UserResponseDTO> getEventParticipants(UUID eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
-
-        // Converte a lista de entidades para DTOs usando o mapper
-        return event.getParticipants().stream()
-                .map(userMapper::toResponseDTO)
-                .toList();
-    }
-
-    @Transactional
-    public void registerParticipant(UUID eventId, UUID userId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-        // TODO: Quando o evento tiver status ele deve ser verificado aqui
-        if (event.getParticipants().contains(user)) {
-            throw new RuntimeException("Usuário já está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
-        }
-
-        user.getEventsRegistered().add(event);
-        event.getParticipants().add(user);
-
-        userRepository.save(user);
-    }
-
-    @Transactional
-    public void unregisterParticipant(UUID eventId, UUID userId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-
-        if (!event.getParticipants().contains(user)) {
-            throw new RuntimeException("O usuário informado não está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
-        }
-
-        user.getEventsRegistered().remove(event);
-        event.getParticipants().remove(user);
-
-        userRepository.save(user);
-    }
+//    public List<UserResponseDTO> getEventParticipants(UUID eventId) {
+//        Event event = eventRepository.findById(eventId)
+//                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
+//
+//        // Converte a lista de entidades para DTOs usando o mapper
+//        return event.getParticipants().stream()
+//                .map(userMapper::toResponseDTO)
+//                .toList();
+//    }
+//
+//    @Transactional
+//    public void registerParticipant(UUID eventId, UUID userId) {
+//        Event event = eventRepository.findById(eventId)
+//                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+//        // TODO: Quando o evento tiver status ele deve ser verificado aqui
+//        if (event.getParticipants().contains(user)) {
+//            throw new RuntimeException("Usuário já está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
+//        }
+//
+//        user.getEventsRegistered().add(event);
+//        event.getParticipants().add(user);
+//
+//        userRepository.save(user);
+//    }
+//
+//    @Transactional
+//    public void unregisterParticipant(UUID eventId, UUID userId) {
+//        Event event = eventRepository.findById(eventId)
+//                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+//
+//        if (!event.getParticipants().contains(user)) {
+//            throw new RuntimeException("O usuário informado não está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
+//        }
+//
+//        user.getEventsRegistered().remove(event);
+//        event.getParticipants().remove(user);
+//
+//        userRepository.save(user);
+//    }
 
 }

@@ -5,6 +5,7 @@ import com.jorder.agora.dto.EventResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
 import com.jorder.agora.model.User;
 import com.jorder.agora.service.EventService;
+import com.jorder.agora.service.RegisterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
+//    private final RegisterService registerService;
 
     @PostMapping
     public ResponseEntity<EventResponseDTO> createEvent(@RequestBody EventRequestDTO eventRequest) {
@@ -53,21 +55,21 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{eventId}/participants")
-    public ResponseEntity<List<UserResponseDTO>> getEventParticipants(@PathVariable UUID eventId) {
-        return ResponseEntity.ok(eventService.getEventParticipants(eventId));
-    }
-
-    @PostMapping("/{eventId}/participants/{userId}")
-    public ResponseEntity<Void> registerParticipant(@PathVariable UUID eventId, @PathVariable UUID userId) {
-        eventService.registerParticipant(eventId, userId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @DeleteMapping("/{eventId}/participants/{userId}")
-    public ResponseEntity<Void> unregisterParticipant(@PathVariable UUID eventId, @PathVariable UUID userId) {
-        eventService.unregisterParticipant(eventId, userId);
-        return ResponseEntity.noContent().build();
-    }
+//    @GetMapping("/{eventId}/participants")
+//    public ResponseEntity<List<UserResponseDTO>> getEventParticipants(@PathVariable UUID eventId) {
+//        return ResponseEntity.ok(registerService.getEventParticipants(eventId));
+//    }
+//
+//    @PostMapping("/{eventId}/participants/{userId}")
+//    public ResponseEntity<Void> registerParticipant(@PathVariable UUID eventId, @PathVariable UUID userId) {
+//        registerService.registerParticipant(eventId, userId);
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
+//
+//    @DeleteMapping("/{eventId}/participants/{userId}")
+//    public ResponseEntity<Void> unregisterParticipant(@PathVariable UUID eventId, @PathVariable UUID userId) {
+//        registerService.unregisterParticipant(eventId, userId);
+//        return ResponseEntity.noContent().build();
+//    }
 
 }
