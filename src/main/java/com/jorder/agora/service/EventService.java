@@ -66,7 +66,7 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
         if (!event.getOrganizer().getId().equals(dto.organizerId())) {
-            throw new RuntimeException("Apenas o organizador do evento pode realizar alterações.");
+            throw new RuntimeException("Apenas o organizador do evento pode realizar alterações."); // TODO: Business exception com status code 403 Forbidden
         }
 
         eventMapper.updateEntityFromDto(dto, event);
@@ -78,7 +78,7 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
         if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new RuntimeException("Ação não permitida: Você não é o organizador deste evento.");
+            throw new RuntimeException("Ação não permitida: Você não é o organizador deste evento."); // TODO: Business exception com status code 403 Forbidden
         }
 
         eventRepository.deleteById(id);
@@ -102,7 +102,7 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
         // TODO: Quando o evento tiver status ele deve ser verificado aqui
         if (event.getParticipants().contains(user)) {
-            throw new RuntimeException("Usuário já está inscrito neste evento.");
+            throw new RuntimeException("Usuário já está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
         }
 
         user.getEventsRegistered().add(event);
@@ -117,6 +117,10 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (!event.getParticipants().contains(user)) {
+            throw new RuntimeException("O usuário informado não está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
+        }
 
         user.getEventsRegistered().remove(event);
         event.getParticipants().remove(user);
