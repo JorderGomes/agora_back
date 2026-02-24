@@ -15,10 +15,10 @@ public interface EventMapper {
     EventResponseDTO toResponseDTO(Event event);
 
     default Integer mapParticipantCount(Event event) {
-        if (event.getParticipants() == null) {
+        if (event.getRegistrations() == null) {
             return 0;
         }
-        return event.getParticipants().size();
+        return event.getRegistrations().size();
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
