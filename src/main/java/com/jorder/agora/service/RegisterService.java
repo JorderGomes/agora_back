@@ -1,7 +1,7 @@
 package com.jorder.agora.service;
 
 import com.jorder.agora.dto.UserResponseDTO;
-import com.jorder.agora.mapper.EventMapper;
+//import com.jorder.agora.mapper.EventMapper;
 import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.Event;
 import com.jorder.agora.model.Registration;
@@ -12,7 +12,7 @@ import com.jorder.agora.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.LogManager;
+//import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class RegisterService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final EventMapper eventMapper;
+//    private final EventMapper eventMapper;
     private final UserMapper userMapper;
     private final RegistrationRepository registrationRepository;
 

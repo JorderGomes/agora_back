@@ -33,4 +33,10 @@ public class RegisterController {
         registerService.unregisterParticipant(eventId, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{eventId}/participants/{userId}/checkin")
+    public ResponseEntity<Void> checkInParticipant(@PathVariable UUID eventId, @PathVariable UUID userId, @RequestParam boolean present) {
+        registerService.updatePresence(eventId, userId, present);
+        return ResponseEntity.noContent().build();
+    }
 }
