@@ -1,7 +1,9 @@
 package com.jorder.agora.service;
 
+import com.jorder.agora.dto.ParticipantResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
 //import com.jorder.agora.mapper.EventMapper;
+import com.jorder.agora.mapper.RegistrationMapper;
 import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.Event;
 import com.jorder.agora.model.Registration;
@@ -27,16 +29,25 @@ public class RegisterService {
 //    private final EventMapper eventMapper;
     private final UserMapper userMapper;
     private final RegistrationRepository registrationRepository;
+    private RegistrationMapper registrationMapper;
 
-    public List<UserResponseDTO> getEventParticipants(UUID eventId, Boolean present) {
+    public List<ParticipantResponseDTO> getEventParticipants(UUID eventId, Boolean present) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
         return event.getRegistrations().stream()
                 .filter(reg -> present == null || reg.isPresent() == present)
-                .map(registration -> userMapper.toResponseDTO(registration.getUser()))
+                //.map(registration -> userMapper.toResponseDTO(registration.getUser()))
+                .map(registrationMapper::toParticipantDTO)
                 .toList();
     }
+    
+    /*
+    return event.getRegistrations().stream()
+            .filter(reg -> present == null || reg.isPresent() == present)
+            .map(registrationMapper::toParticipantDTO) // Usando o novo mapper
+            .toList();
+    * */
 
     @Transactional
     public void registerParticipant(UUID eventId, UUID userId) {

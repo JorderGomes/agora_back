@@ -1,5 +1,6 @@
 package com.jorder.agora.controller;
 
+import com.jorder.agora.dto.ParticipantResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
 import com.jorder.agora.service.RegisterService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class RegisterController {
     private final RegisterService registerService;
 
     @GetMapping("/{eventId}/participants")
-    public ResponseEntity<List<UserResponseDTO>> getEventParticipants(@PathVariable UUID eventId, @RequestParam(required = false) Boolean present) {
+    public ResponseEntity<List<ParticipantResponseDTO>> getEventParticipants(@PathVariable UUID eventId, @RequestParam(required = false) Boolean present) {
         return ResponseEntity.ok(registerService.getEventParticipants(eventId, present));
     }
 
