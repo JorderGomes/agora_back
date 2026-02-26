@@ -28,11 +28,12 @@ public class RegisterService {
     private final UserMapper userMapper;
     private final RegistrationRepository registrationRepository;
 
-    public List<UserResponseDTO> getEventParticipants(UUID eventId) {
+    public List<UserResponseDTO> getEventParticipants(UUID eventId, Boolean present) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
         return event.getRegistrations().stream()
+                .filter(reg -> present == null || reg.isPresent() == present)
                 .map(registration -> userMapper.toResponseDTO(registration.getUser()))
                 .toList();
     }
@@ -73,6 +74,7 @@ public class RegisterService {
 
         registrationRepository.save(registration);
     }
+
 
 
 }

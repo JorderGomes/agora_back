@@ -18,8 +18,8 @@ public class RegisterController {
     private final RegisterService registerService;
 
     @GetMapping("/{eventId}/participants")
-    public ResponseEntity<List<UserResponseDTO>> getEventParticipants(@PathVariable UUID eventId) {
-        return ResponseEntity.ok(registerService.getEventParticipants(eventId));
+    public ResponseEntity<List<UserResponseDTO>> getEventParticipants(@PathVariable UUID eventId, @RequestParam(required = false) Boolean present) {
+        return ResponseEntity.ok(registerService.getEventParticipants(eventId, present));
     }
 
     @PostMapping("/{eventId}/participants/{userId}")
