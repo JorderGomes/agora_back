@@ -26,10 +26,8 @@ public class RegisterService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-//    private final EventMapper eventMapper;
-    private final UserMapper userMapper;
     private final RegistrationRepository registrationRepository;
-    private RegistrationMapper registrationMapper;
+    private final RegistrationMapper registrationMapper;
 
     public List<ParticipantResponseDTO> getEventParticipants(UUID eventId, Boolean present) {
         Event event = eventRepository.findById(eventId)
@@ -41,13 +39,6 @@ public class RegisterService {
                 .map(registrationMapper::toParticipantDTO)
                 .toList();
     }
-    
-    /*
-    return event.getRegistrations().stream()
-            .filter(reg -> present == null || reg.isPresent() == present)
-            .map(registrationMapper::toParticipantDTO) // Usando o novo mapper
-            .toList();
-    * */
 
     @Transactional
     public void registerParticipant(UUID eventId, UUID userId) {
