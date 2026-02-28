@@ -1,6 +1,7 @@
 package com.jorder.agora.service;
 
 import com.jorder.agora.dto.ParticipantResponseDTO;
+import com.jorder.agora.exceptions.BusinessException;
 import com.jorder.agora.mapper.RegistrationMapper;
 import com.jorder.agora.model.Event;
 import com.jorder.agora.model.Registration;
@@ -49,7 +50,7 @@ class RegisterServiceTest {
         // Simula que já existe a inscrição no banco
         when(registrationRepository.existsByEventIdAndUserId(eventId, userId)).thenReturn(true);
 
-        assertThrows(RuntimeException.class, () -> registerService.registerParticipant(eventId, userId));
+        assertThrows(BusinessException.class, () -> registerService.registerParticipant(eventId, userId));
         verify(registrationRepository, never()).save(any());
     }
 
@@ -133,7 +134,7 @@ class RegisterServiceTest {
         when(registrationRepository.findByEventIdAndUserId(eventId, userId))
                 .thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> registerService.unregisterParticipant(eventId, userId));
+        assertThrows(BusinessException.class, () -> registerService.unregisterParticipant(eventId, userId));
     }
 
     @Test

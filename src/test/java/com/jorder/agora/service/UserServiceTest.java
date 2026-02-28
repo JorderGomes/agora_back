@@ -117,7 +117,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("Deve deletar usuário com sucesso")
-    void deleteUser_Success() {
+    void deleteUserSuccess() {
         UUID id = UUID.randomUUID();
         when(userRepository.existsById(id)).thenReturn(true);
 
@@ -128,7 +128,7 @@ class UserServiceTest {
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar deletar usuário inexistente")
-    void deleteUser_NotFound() {
+    void deleteUserNotFound() {
         UUID id = UUID.randomUUID();
         when(userRepository.existsById(id)).thenReturn(false);
 
