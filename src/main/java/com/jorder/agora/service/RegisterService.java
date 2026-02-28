@@ -3,6 +3,7 @@ package com.jorder.agora.service;
 import com.jorder.agora.dto.ParticipantResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
 //import com.jorder.agora.mapper.EventMapper;
+import com.jorder.agora.exceptions.BusinessException;
 import com.jorder.agora.mapper.RegistrationMapper;
 import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.Event;
@@ -35,7 +36,6 @@ public class RegisterService {
 
         return event.getRegistrations().stream()
                 .filter(reg -> present == null || reg.isPresent() == present)
-                //.map(registration -> userMapper.toResponseDTO(registration.getUser()))
                 .map(registrationMapper::toParticipantDTO)
                 .toList();
     }
@@ -48,7 +48,7 @@ public class RegisterService {
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         if (registrationRepository.existsByEventIdAndUserId(eventId, userId)) {
-            throw new RuntimeException("Usuário já está inscrito neste evento."); // TODO: Business Exception com status code 409 (Conflict)
+            throw new BusinessException("Usuário já está inscrito neste evento.");
         }
 
         Registration registration = new Registration();
@@ -62,7 +62,7 @@ public class RegisterService {
     @Transactional
     public void unregisterParticipant(UUID eventId, UUID userId) {
         Registration registration = registrationRepository.findByEventIdAndUserId(eventId, userId)
-                .orElseThrow(() -> new RuntimeException("O usuário informado não está inscrito neste evento.")); // TODO: Business Exception com status code 409 (Conflict)
+                .orElseThrow(() -> new BusinessException("O usuário informado não está inscrito neste evento."));
 
         registrationRepository.delete(registration);
     }

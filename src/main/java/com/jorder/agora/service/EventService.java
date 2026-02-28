@@ -3,6 +3,7 @@ package com.jorder.agora.service;
 import com.jorder.agora.dto.EventRequestDTO;
 import com.jorder.agora.dto.EventResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
+import com.jorder.agora.exceptions.ForbiddenActionException;
 import com.jorder.agora.mapper.EventMapper;
 import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.Event;
@@ -66,7 +67,7 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
         if (!event.getOrganizer().getId().equals(dto.organizerId())) {
-            throw new RuntimeException("Apenas o organizador do evento pode realizar alterações."); // TODO: Business exception com status code 403 Forbidden
+            throw new ForbiddenActionException("Apenas o organizador do evento pode realizar alterações.");
         }
 
         eventMapper.updateEntityFromDto(dto, event);
@@ -78,54 +79,12 @@ public class EventService {
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
         if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new RuntimeException("Ação não permitida: Você não é o organizador deste evento."); // TODO: Business exception com status code 403 Forbidden
+            throw new ForbiddenActionException("Ação não permitida: Você não é o organizador deste evento.");
         }
 
         eventRepository.deleteById(id);
     }
 
-//    public List<UserResponseDTO> getEventParticipants(UUID eventId) {
-//        Event event = eventRepository.findById(eventId)
-//                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
-//
-//        // Converte a lista de entidades para DTOs usando o mapper
-//        return event.getParticipants().stream()
-//                .map(userMapper::toResponseDTO)
-//                .toList();
-//    }
-//
-//    @Transactional
-//    public void registerParticipant(UUID eventId, UUID userId) {
-//        Event event = eventRepository.findById(eventId)
-//                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-//        // TODO: Quando o evento tiver status ele deve ser verificado aqui
-//        if (event.getParticipants().contains(user)) {
-//            throw new RuntimeException("Usuário já está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
-//        }
-//
-//        user.getEventsRegistered().add(event);
-//        event.getParticipants().add(user);
-//
-//        userRepository.save(user);
-//    }
-//
-//    @Transactional
-//    public void unregisterParticipant(UUID eventId, UUID userId) {
-//        Event event = eventRepository.findById(eventId)
-//                .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
-//
-//        if (!event.getParticipants().contains(user)) {
-//            throw new RuntimeException("O usuário informado não está inscrito neste evento."); // TODO: Business exception com status code 409 Conflict
-//        }
-//
-//        user.getEventsRegistered().remove(event);
-//        event.getParticipants().remove(user);
-//
-//        userRepository.save(user);
-//    }
+
 
 }
