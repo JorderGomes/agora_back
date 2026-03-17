@@ -11,7 +11,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "registrations")
+@Table(name = "registrations",
+        indexes = {
+        @Index(name = "idx_reg_event_id", columnList = "event_id"),
+        @Index(name = "idx_reg_notified", columnList = "notificationSent")
+})
 public class Registration {
 
     @Id
@@ -26,6 +30,10 @@ public class Registration {
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean present;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean notificationSent;
 
 }

@@ -55,6 +55,7 @@ public class RegisterService {
         registration.setEvent(event);
         registration.setUser(user);
         registration.setPresent(false);
+        registration.setNotificationSent(false);
 
         registrationRepository.save(registration);
     }

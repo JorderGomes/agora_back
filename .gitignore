@@ -34,3 +34,4 @@ build/
 /agora_db.mv.db
 
 .env
+/agora_db.trace.db
