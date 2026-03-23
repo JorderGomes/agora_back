@@ -1,5 +1,6 @@
 package com.jorder.agora.dto;
 
+import com.jorder.agora.model.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -14,5 +15,8 @@ public record UserRequestDTO(
 
         @NotBlank(message = "A senha é obrigatória")
         @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
-        String password
+        String password,
+
+        @NotBlank(message = "O role é obrigatório")
+        UserRole role
 ) {}
