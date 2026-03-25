@@ -1,5 +1,6 @@
 package com.jorder.agora.service;
 
+import com.jorder.agora.configuration.SecurityUtils;
 import com.jorder.agora.dto.EventRequestDTO;
 import com.jorder.agora.dto.EventResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
@@ -66,9 +67,7 @@ public class EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
-        if (!event.getOrganizer().getId().equals(dto.organizerId())) {
-            throw new ForbiddenActionException("Apenas o organizador do evento pode realizar alterações.");
-        }
+        checkUserIdentity(dto.organizerId());
 
         eventMapper.updateEntityFromDto(dto, event);
         return eventMapper.toResponseDTO(eventRepository.save(event));
@@ -78,13 +77,17 @@ public class EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
 
-        if (!event.getOrganizer().getId().equals(organizerId)) {
-            throw new ForbiddenActionException("Ação não permitida: Você não é o organizador deste evento.");
-        }
+        checkUserIdentity(organizerId);
 
         eventRepository.deleteById(id);
     }
 
+    private void checkUserIdentity(UUID id){
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
 
+        if (!id.equals(currentUserId)) {
+            throw new ForbiddenActionException("Apenas o organizador do evento pode realizar alterações.");
+        }
+    }
 
 }

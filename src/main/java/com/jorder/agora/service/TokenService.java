@@ -25,6 +25,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("agora")
                     .withSubject(user.getName())
+                    .withClaim("id", user.getId().toString())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException e) {

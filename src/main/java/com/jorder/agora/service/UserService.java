@@ -1,7 +1,9 @@
 package com.jorder.agora.service;
 
+import com.jorder.agora.configuration.SecurityUtils;
 import com.jorder.agora.dto.UserRequestDTO;
 import com.jorder.agora.dto.UserResponseDTO;
+import com.jorder.agora.exceptions.ForbiddenActionException;
 import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.User;
 import com.jorder.agora.model.UserRole;
@@ -26,7 +28,6 @@ public class UserService {
         User user = userMapper.toEntity(dto);
 
         user.setPassword(passwordEncoder.encode(dto.password()));
-//        user.setRole(UserRole.valueOf(dto.role().toUpperCase()));
 
         return userMapper.toResponseDTO(userRepository.save(user));
     }
@@ -44,6 +45,8 @@ public class UserService {
     }
 
     public UserResponseDTO updateUser(UUID id, UserRequestDTO dto) {
+        checkUserIdentity(id, "Você não tem permissão para alterar os dados de outro usuário.");
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
@@ -52,6 +55,8 @@ public class UserService {
     }
 
     public void deleteUser(UUID id) {
+        checkUserIdentity(id, "Você não tem permissão para apagar os dados de outro usuário.");
+
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("Usuário não encontrado");
         }
@@ -60,6 +65,14 @@ public class UserService {
 
     public boolean existsByName(String name){
         return userRepository.existsByName(name);
+    }
+
+    private void checkUserIdentity(UUID id, String message){
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        if (!id.equals(currentUserId)) {
+            throw new ForbiddenActionException(message);
+        }
     }
 
 }

@@ -1,9 +1,11 @@
 package com.jorder.agora.service;
 
+import com.jorder.agora.configuration.SecurityUtils;
 import com.jorder.agora.dto.ParticipantResponseDTO;
 import com.jorder.agora.dto.UserResponseDTO;
 //import com.jorder.agora.mapper.EventMapper;
 import com.jorder.agora.exceptions.BusinessException;
+import com.jorder.agora.exceptions.ForbiddenActionException;
 import com.jorder.agora.mapper.RegistrationMapper;
 import com.jorder.agora.mapper.UserMapper;
 import com.jorder.agora.model.Event;
@@ -42,10 +44,12 @@ public class RegisterService {
 
     @Transactional
     public void registerParticipant(UUID eventId, UUID userId) {
+
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Evento não encontrado"));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        checkUserIdentity(userId, "Um usuário pode somente registrar a si mesmo em um evento.");
 
         if (registrationRepository.existsByEventIdAndUserId(eventId, userId)) {
             throw new BusinessException("Usuário já está inscrito neste evento.");
@@ -64,12 +68,13 @@ public class RegisterService {
     public void unregisterParticipant(UUID eventId, UUID userId) {
         Registration registration = registrationRepository.findByEventIdAndUserId(eventId, userId)
                 .orElseThrow(() -> new BusinessException("O usuário informado não está inscrito neste evento."));
-
+        validateUnregisterPermission(registration);
         registrationRepository.delete(registration);
     }
 
     @Transactional
     public void updatePresence(UUID eventId, UUID userId, boolean presence) {
+        checkUserIdentity(userId, "Um usuário pode somente atualizar sua própria presença em um evento.");
         Registration registration = registrationRepository.findByEventIdAndUserId(eventId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Inscrição não encontrada para este usuário neste evento."));
 
@@ -78,6 +83,26 @@ public class RegisterService {
         registrationRepository.save(registration);
     }
 
+    private void checkUserIdentity(UUID id, String message){
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
 
+        if (!id.equals(currentUserId)) {
+            throw new ForbiddenActionException(message);
+        }
+    }
+
+    private void validateUnregisterPermission(Registration registration) {
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        UUID participantId = registration.getUser().getId();
+        UUID organizerId = registration.getEvent().getOrganizer().getId();
+
+        boolean isSelf = currentUserId.equals(participantId);
+        boolean isOrganizer = currentUserId.equals(organizerId);
+
+        if (!isSelf && !isOrganizer) {
+            throw new ForbiddenActionException("Permissão negada: apenas o participante ou o organizador podem cancelar esta inscrição.");
+        }
+    }
 
 }
