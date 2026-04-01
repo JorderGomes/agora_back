@@ -2,20 +2,31 @@
 
 A **Ágora** é uma API REST robusta desenvolvida em Spring Boot para a organização e gestão de eventos, participantes e presenças. O nome remete às praças centrais da Grécia Antiga, locais de assembleia e eventos públicos.
 
-> ⚠️ **Status do Projeto:** 🚧 Em construção. Implementando a camada de tratamento global de exceções e segurança.
-> 
-
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **Java 17** & **Spring Boot 4.0.2**
+- **Spring Security** (Autenticação e Autorização)
+- **Auth0 JWT** (Token-based authentication)
+- **SpringDoc OpenAPI 3.0.0** (Documentação Swagger)
 - **Spring Data JPA** (Persistência de dados)
-- **H2 Database** (Banco de dados em memória para desenvolvimento)
-- **Lombok** (Produtividade e redução de boilerplate)
-- **MapStruct** (Mapeamento performático de objetos)
-- **JUnit 5** & **Mockito** (Suíte de testes unitários)
-- **Bean Validation** (Validação de dados de entrada)
+- **H2 Database** (Banco de dados em memória)
+- **MapStruct 1.6.3** (Mapeamento performático de objetos)
+- **Lombok** & **Bean Validation**
+
+---
+
+## 🛡️ Segurança e Autenticação
+
+A arquitetura de segurança foi desenhada para ser **Stateless**, garantindo escalabilidade e proteção rigorosa dos dados:
+
+- **JWT (JSON Web Token):** Autenticação baseada em tokens com identificação de usuário (`Subject`) e ID único nas `Claims` para otimização de consultas.
+- **Segurança de Senhas:** Implementação de hashing com **BCrypt** 
+- **Controle de Acesso por Contexto:** Validação manual na camada de serviço para garantir que:
+    * Somente o próprio usuário logado edite seus dados.
+    * Somente o **organizador** de um evento possa atualizar ou excluí-lo.
+    * Participantes possam gerenciar apenas suas próprias inscrições.
 
 ---
 
@@ -28,6 +39,8 @@ O projeto foi estruturado seguindo padrões de mercado para garantir escalabilid
 - **Repository Pattern:** Abstração total da camada de dados utilizando o Spring Data JPA.
 - **Mapper Pattern:** Uso do **MapStruct** para separar a lógica de conversão entre Entidade e DTO, evitando códigos repetitivos e manuais.
 - **Specification Pattern:** Implementado no `EventService` para permitir buscas dinâmicas e filtragens complexas de eventos de forma elegante e desacoplada.
+- **RBAC (Role-Based Access Control):** Diferenciação de permissões entre usuários comuns (`USER`) e administradores (`ADMIN`).
+- **Global Exception Handling:** Tratamento centralizado de erros com respostas JSON padronizadas e códigos HTTP semânticos (401, 403, 404, 409).
 
 ---
 
@@ -43,9 +56,10 @@ Para manter o código limpo e profissional, aplicamos os seguintes conceitos:
 
 ---
 
-## 📈 Próximos Passos
+## 📖 Documentação da API
 
-- [ ]  Implementação de Spring Security para controle de acesso.
-- [ ]  Documentação da API com Swagger/OpenAPI.
+A documentação interativa da API (Swagger UI) pode ser acessada localmente após a execução do projeto através do link:
 
----
+`http://localhost:8080/swagger-ui/index.html`
+
+
